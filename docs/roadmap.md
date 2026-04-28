@@ -8,9 +8,9 @@
 - [x] Pre-commit hooks: ruff, trailing whitespace, end-of-file fixer
 - [x] Test setup: `pytest` + `pytest-asyncio`, `httpx` for async client, `coverage` config
 - [x] CI: GitHub Actions workflow — lint, type-check, unit tests on every push/PR
-- [ ] Docker: `Dockerfile` for the API, `docker-compose.yml` with `api`, `postgres`, `redis`
-- [ ] Alembic: migration setup wired to SQLAlchemy async engine
-- [ ] `.env.example` + settings model (`pydantic-settings`)
+- [x] Docker: `Dockerfile` for the API, `docker-compose.yml` with `api`, `postgres`, `redis`
+- [x] Alembic: migration setup wired to SQLAlchemy async engine
+- [x] `.env.example` + settings model (`pydantic-settings`)
 
 ## Phase 1 — Core domain
 
