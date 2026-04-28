@@ -9,31 +9,38 @@ Document Processing Gateway — a FastAPI microservice that orchestrates documen
 ## Commands
 
 ```bash
+# Install / sync deps (uses uv)
+uv sync --extra dev
+
 # Start all services
 docker compose up --build
 
 # Start only infra (postgres + redis), run API locally
 docker compose up postgres redis -d
-uvicorn app.main:app --reload
+.venv/bin/uvicorn app.main:app --reload
 
 # Run all tests
-pytest
+.venv/bin/pytest
 
 # Run a single test file
-pytest tests/unit/test_state_machine.py
+.venv/bin/pytest tests/unit/test_state_machine.py
 
 # Run a single test by name
-pytest tests/unit/test_state_machine.py::test_invalid_transition
+.venv/bin/pytest tests/unit/test_state_machine.py::test_invalid_transition
 
 # Run integration tests (requires docker infra running)
-pytest tests/integration/
+.venv/bin/pytest tests/integration/
+
+# Lint + format
+.venv/bin/ruff check app/ tests/
+.venv/bin/ruff format app/ tests/
 
 # Alembic migrations
-alembic upgrade head
-alembic revision --autogenerate -m "description"
+.venv/bin/alembic upgrade head
+.venv/bin/alembic revision --autogenerate -m "description"
 
 # Start the event consumer manually
-python -m app.consumer.event_consumer
+.venv/bin/python -m app.consumer.event_consumer
 ```
 
 ## Architecture

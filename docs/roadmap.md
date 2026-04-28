@@ -2,8 +2,8 @@
 
 ## Phase 0 — Repo scaffolding
 
-- [ ] Project structure: directories, `__init__.py` files, `app/main.py` FastAPI hello world
-- [ ] Dependency management: `pyproject.toml` with `uv` (or `requirements.txt` split dev/prod)
+- [x] Project structure: directories, `__init__.py` files, `app/main.py` FastAPI hello world
+- [x] Dependency management: `pyproject.toml` with `uv` (or `requirements.txt` split dev/prod)
 - [ ] Linting + formatting: `ruff` (lint + format), config in `pyproject.toml`
 - [ ] Pre-commit hooks: ruff, trailing whitespace, end-of-file fixer
 - [ ] Test setup: `pytest` + `pytest-asyncio`, `httpx` for async client, `coverage` config
