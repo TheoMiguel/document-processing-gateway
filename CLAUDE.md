@@ -12,6 +12,9 @@ Document Processing Gateway — a FastAPI microservice that orchestrates documen
 # Install / sync deps (uses uv)
 uv sync --extra dev
 
+# Install with type-checking tools
+uv sync --extra dev --extra mypy
+
 # Start all services
 docker compose up --build
 
@@ -34,6 +37,9 @@ docker compose up postgres redis -d
 # Lint + format
 .venv/bin/ruff check app/ tests/
 .venv/bin/ruff format app/ tests/
+
+# Type check
+.venv/bin/mypy app/
 
 # Alembic migrations
 .venv/bin/alembic upgrade head

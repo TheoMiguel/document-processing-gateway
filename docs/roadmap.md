@@ -4,10 +4,10 @@
 
 - [x] Project structure: directories, `__init__.py` files, `app/main.py` FastAPI hello world
 - [x] Dependency management: `pyproject.toml` with `uv` (or `requirements.txt` split dev/prod)
-- [ ] Linting + formatting: `ruff` (lint + format), config in `pyproject.toml`
-- [ ] Pre-commit hooks: ruff, trailing whitespace, end-of-file fixer
-- [ ] Test setup: `pytest` + `pytest-asyncio`, `httpx` for async client, `coverage` config
-- [ ] CI: GitHub Actions workflow — lint, type-check, unit tests on every push/PR
+- [x] Linting + formatting: `ruff` (lint + format), config in `pyproject.toml`
+- [x] Pre-commit hooks: ruff, trailing whitespace, end-of-file fixer
+- [x] Test setup: `pytest` + `pytest-asyncio`, `httpx` for async client, `coverage` config
+- [x] CI: GitHub Actions workflow — lint, type-check, unit tests on every push/PR
 - [ ] Docker: `Dockerfile` for the API, `docker-compose.yml` with `api`, `postgres`, `redis`
 - [ ] Alembic: migration setup wired to SQLAlchemy async engine
 - [ ] `.env.example` + settings model (`pydantic-settings`)
