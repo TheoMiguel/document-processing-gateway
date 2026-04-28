@@ -20,33 +20,33 @@ docker compose up --build
 
 # Start only infra (postgres + redis), run API locally
 docker compose up postgres redis -d
-.venv/bin/uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 
 # Run all tests
-.venv/bin/pytest
+uv run pytest
 
 # Run a single test file
-.venv/bin/pytest tests/unit/test_state_machine.py
+uv run pytest tests/unit/test_state_machine.py
 
 # Run a single test by name
-.venv/bin/pytest tests/unit/test_state_machine.py::test_invalid_transition
+uv run pytest tests/unit/test_state_machine.py::test_invalid_transition
 
 # Run integration tests (requires docker infra running)
-.venv/bin/pytest tests/integration/
+uv run pytest tests/integration/
 
 # Lint + format
-.venv/bin/ruff check app/ tests/
-.venv/bin/ruff format app/ tests/
+uv run ruff check app/ tests/
+uv run ruff format app/ tests/
 
 # Type check
-.venv/bin/mypy app/
+uv run mypy app/
 
 # Alembic migrations
-.venv/bin/alembic upgrade head
-.venv/bin/alembic revision --autogenerate -m "description"
+uv run alembic upgrade head
+uv run alembic revision --autogenerate -m "description"
 
 # Start the event consumer manually
-.venv/bin/python -m app.consumer.event_consumer
+uv run python -m app.consumer.event_consumer
 ```
 
 ## Architecture
