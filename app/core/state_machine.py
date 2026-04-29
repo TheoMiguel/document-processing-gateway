@@ -14,7 +14,7 @@ class InvalidTransitionError(Exception):
 
 
 _TRANSITIONS: dict[JobStatus, set[JobStatus]] = {
-    JobStatus.pending: {JobStatus.processing, JobStatus.cancelled},
+    JobStatus.pending: {JobStatus.processing, JobStatus.cancelled, JobStatus.failed},
     JobStatus.processing: {JobStatus.completed, JobStatus.failed, JobStatus.cancelled},
     JobStatus.completed: set(),
     JobStatus.failed: set(),

@@ -50,11 +50,11 @@
 
 ## Phase 6 — Testing
 
-- [ ] Unit: state machine transitions
-- [ ] Unit: `JobService` (mocked DB)
-- [ ] Unit: provider mocks
-- [ ] Unit: pipeline orchestrator (mocked providers + mocked event publisher)
-- [ ] Integration: full flow — create job → pipeline → events → completion
+- [x] Unit: state machine transitions
+- [x] Unit: `JobService` (mocked DB)
+- [x] Unit: provider mocks
+- [x] Unit: pipeline orchestrator (mocked providers + mocked event publisher)
+- [x] Integration: full flow — create job → pipeline → events → completion
 
 ## Phase 7 — Docs + polish
 

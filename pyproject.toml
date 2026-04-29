@@ -42,6 +42,7 @@ indent-style = "space"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = ["integration: requires running postgres and redis (docker-compose)"]
 
 [tool.coverage.run]
 source = ["app"]
