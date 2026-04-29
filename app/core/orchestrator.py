@@ -2,11 +2,27 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
+from tenacity import AsyncRetrying, RetryError, stop_after_attempt, wait_exponential
+
+from app.core.config import settings
 from app.core.events import EventPublisher
 from app.core.state_machine import InvalidTransitionError, JobStatus, transition
 from app.db.engine import AsyncSessionLocal
 from app.models.job import Job
 from app.providers.base import AnalysisProvider, EnrichmentProvider, ExtractionProvider
+
+
+def _retry_kwargs() -> dict:
+    return dict(
+        stop=stop_after_attempt(settings.retry_max_attempts),
+        wait=wait_exponential(
+            multiplier=settings.retry_wait_multiplier,
+            min=settings.retry_wait_min,
+            max=settings.retry_wait_max,
+        ),
+        reraise=True,
+    )
+
 
 STAGE_ORDER = ["extraction", "analysis", "enrichment"]
 
@@ -49,18 +65,20 @@ class PipelineOrchestrator:
             try:
                 for stage in ordered_stages:
                     await self.publisher.publish("job.stage_started", job.id, {"stage": stage})
-                    if stage == "extraction":
-                        partial["extraction"] = await self.extraction.extract(
-                            job.document_content, job.document_type
-                        )
-                    elif stage == "analysis":
-                        partial["analysis"] = await self.analysis.analyze(
-                            partial.get("extraction", {})
-                        )
-                    elif stage == "enrichment":
-                        partial["enrichment"] = await self.enrichment.enrich(
-                            partial.get("extraction", {}), partial.get("analysis", {})
-                        )
+                    async for attempt in AsyncRetrying(**_retry_kwargs()):
+                        with attempt:
+                            if stage == "extraction":
+                                partial["extraction"] = await self.extraction.extract(
+                                    job.document_content, job.document_type
+                                )
+                            elif stage == "analysis":
+                                partial["analysis"] = await self.analysis.analyze(
+                                    partial.get("extraction", {})
+                                )
+                            elif stage == "enrichment":
+                                partial["enrichment"] = await self.enrichment.enrich(
+                                    partial.get("extraction", {}), partial.get("analysis", {})
+                                )
                     job.partial_results = dict(partial)
                     job.updated_at = datetime.now(timezone.utc)
                     await db.commit()
@@ -77,6 +95,14 @@ class PipelineOrchestrator:
 
             except InvalidTransitionError:
                 raise
+            except RetryError as exc:
+                cause = str(exc.last_attempt.exception())
+                job.status = transition(job.status, JobStatus.failed)
+                job.error_message = cause
+                job.updated_at = datetime.now(timezone.utc)
+                await db.commit()
+                await self.publisher.publish("job.failed", job.id, {"error": cause})
+                await self.publisher.publish_dlq(job.id, {"error": cause, "job_id": str(job.id)})
             except Exception as exc:
                 job.status = transition(job.status, JobStatus.failed)
                 job.error_message = str(exc)

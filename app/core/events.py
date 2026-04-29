@@ -9,6 +9,7 @@ import redis.asyncio as aioredis
 logger = logging.getLogger(__name__)
 
 STREAM = "jobs:events"
+DLQ_STREAM = "jobs:dlq"
 
 
 class EventPublisher:
@@ -37,6 +38,18 @@ class EventPublisher:
         except Exception:
             logger.warning("Redis unavailable, queuing event %s for job %s", event_type, job_id)
             await self._fallback.put(fields)
+
+    async def publish_dlq(self, job_id: uuid.UUID, payload: dict) -> None:
+        fields = {
+            "job_id": str(job_id),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "payload": json.dumps(payload),
+        }
+        try:
+            assert self._client is not None
+            await self._client.xadd(DLQ_STREAM, fields)
+        except Exception:
+            logger.error("Failed to publish to DLQ for job %s: %s", job_id, payload)
 
     async def drain_loop(self) -> None:
         while True:

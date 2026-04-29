@@ -44,9 +44,9 @@
 
 ## Phase 5 — Resiliency
 
-- [ ] Retry with exponential backoff on provider calls (`tenacity`)
-- [ ] Dead letter queue stream (`jobs:dlq`) for exhausted jobs
-- [ ] Broker-down handling (in-memory queue + background retry)
+- [x] Retry with exponential backoff on provider calls (`tenacity`)
+- [x] Dead letter queue stream (`jobs:dlq`) for exhausted jobs
+- [x] Broker-down handling (in-memory queue + background retry)
 
 ## Phase 6 — Testing
 
