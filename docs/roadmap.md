@@ -14,10 +14,10 @@
 
 ## Phase 1 — Core domain
 
-- [ ] SQLAlchemy `Job` model
-- [ ] State machine with valid transitions and `InvalidTransitionError`
-- [ ] `JobService`: create, get, list (with status filter), cancel
-- [ ] Alembic initial migration
+- [x] SQLAlchemy `Job` model
+- [x] State machine with valid transitions and `InvalidTransitionError`
+- [x] `JobService`: create, get, list (with status filter), cancel
+- [x] Alembic initial migration
 
 ## Phase 2 — API layer
 

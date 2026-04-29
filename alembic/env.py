@@ -3,6 +3,7 @@ from logging.config import fileConfig
 
 from sqlalchemy.ext.asyncio import create_async_engine
 
+import app.models  # noqa: F401 — registers all ORM models with Base.metadata
 from alembic import context
 from app.core.config import settings
 from app.models.base import Base
