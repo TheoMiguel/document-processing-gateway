@@ -37,10 +37,10 @@
 
 ## Phase 4 — Event streaming
 
-- [ ] Redis Streams publisher (`core/events.py`)
-- [ ] Consumer group setup and `event_consumer.py`
-- [ ] Publish all 6 required events throughout the pipeline
-- [ ] Fallback queue for when Redis is unavailable
+- [x] Redis Streams publisher (`core/events.py`)
+- [x] Consumer group setup and `event_consumer.py`
+- [x] Publish all 6 required events throughout the pipeline
+- [x] Fallback queue for when Redis is unavailable
 
 ## Phase 5 — Resiliency
 

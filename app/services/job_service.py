@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.events import EventPublisher
 from app.core.state_machine import JobStatus, transition
 from app.models.job import Job
 
@@ -13,8 +14,9 @@ class JobNotFoundError(Exception):
 
 
 class JobService:
-    def __init__(self, db: AsyncSession) -> None:
+    def __init__(self, db: AsyncSession, publisher: EventPublisher) -> None:
         self.db = db
+        self.publisher = publisher
 
     async def create(
         self,
@@ -33,6 +35,11 @@ class JobService:
         self.db.add(job)
         await self.db.commit()
         await self.db.refresh(job)
+        await self.publisher.publish(
+            "job.created",
+            job.id,
+            {"document_name": job.document_name, "pipeline_config": job.pipeline_config},
+        )
         return job
 
     async def get(self, job_id: uuid.UUID) -> Job:
@@ -61,4 +68,5 @@ class JobService:
         job.updated_at = datetime.now(timezone.utc)
         await self.db.commit()
         await self.db.refresh(job)
+        await self.publisher.publish("job.cancelled", job.id, {})
         return job

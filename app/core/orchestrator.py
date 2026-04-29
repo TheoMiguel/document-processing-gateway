@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
+from app.core.events import EventPublisher
 from app.core.state_machine import InvalidTransitionError, JobStatus, transition
 from app.db.engine import AsyncSessionLocal
 from app.models.job import Job
@@ -16,10 +17,12 @@ class PipelineOrchestrator:
         extraction: ExtractionProvider,
         analysis: AnalysisProvider,
         enrichment: EnrichmentProvider,
+        publisher: EventPublisher,
     ) -> None:
         self.extraction = extraction
         self.analysis = analysis
         self.enrichment = enrichment
+        self.publisher = publisher
 
     async def run(self, job_id: uuid.UUID) -> None:
         async with AsyncSessionLocal() as db:
@@ -33,6 +36,7 @@ class PipelineOrchestrator:
                 job.error_message = f"Unknown stages: {sorted(unknown)}"
                 job.updated_at = datetime.now(timezone.utc)
                 await db.commit()
+                await self.publisher.publish("job.failed", job.id, {"error": job.error_message})
                 return
 
             ordered_stages = [s for s in STAGE_ORDER if s in job.pipeline_config]
@@ -44,6 +48,7 @@ class PipelineOrchestrator:
             partial: dict[str, Any] = {}
             try:
                 for stage in ordered_stages:
+                    await self.publisher.publish("job.stage_started", job.id, {"stage": stage})
                     if stage == "extraction":
                         partial["extraction"] = await self.extraction.extract(
                             job.document_content, job.document_type
@@ -59,10 +64,16 @@ class PipelineOrchestrator:
                     job.partial_results = dict(partial)
                     job.updated_at = datetime.now(timezone.utc)
                     await db.commit()
+                    await self.publisher.publish(
+                        "job.stage_completed",
+                        job.id,
+                        {"stage": stage, "result": partial[stage]},
+                    )
 
                 job.status = transition(job.status, JobStatus.completed)
                 job.updated_at = datetime.now(timezone.utc)
                 await db.commit()
+                await self.publisher.publish("job.completed", job.id, {})
 
             except InvalidTransitionError:
                 raise
@@ -71,3 +82,4 @@ class PipelineOrchestrator:
                 job.error_message = str(exc)
                 job.updated_at = datetime.now(timezone.utc)
                 await db.commit()
+                await self.publisher.publish("job.failed", job.id, {"error": str(exc)})

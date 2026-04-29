@@ -12,8 +12,8 @@ from app.services.job_service import JobNotFoundError, JobService
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 
-def get_job_service(db: AsyncSession = Depends(get_db)) -> JobService:
-    return JobService(db)
+def get_job_service(request: Request, db: AsyncSession = Depends(get_db)) -> JobService:
+    return JobService(db, request.app.state.publisher)
 
 
 def get_orchestrator(request: Request) -> PipelineOrchestrator:
