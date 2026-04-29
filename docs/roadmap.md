@@ -30,10 +30,10 @@
 
 ## Phase 3 — Providers + pipeline
 
-- [ ] `ExtractionProvider`, `AnalysisProvider`, `EnrichmentProvider` protocols
-- [ ] Two mock implementations per provider (fast ~100ms / slow ~2s)
-- [ ] `PipelineOrchestrator`: sequential stage execution, partial result persistence
-- [ ] Wire orchestrator as a FastAPI background task on job creation
+- [x] `ExtractionProvider`, `AnalysisProvider`, `EnrichmentProvider` protocols
+- [x] Two mock implementations per provider (fast ~100ms / slow ~2s)
+- [x] `PipelineOrchestrator`: sequential stage execution, partial result persistence
+- [x] Wire orchestrator as a FastAPI background task on job creation
 
 ## Phase 4 — Event streaming
 
