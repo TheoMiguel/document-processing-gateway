@@ -11,6 +11,10 @@ dependencies = [
     "pydantic-settings>=2.0.0",
     "redis>=5.0.0",
     "tenacity>=8.2.0",
+    "grpcio>=1.64.0",
+    "grpcio-tools>=1.64.0",
+    "protobuf>=5.27.0,<6",
+    "grpcio-reflection>=1.71.2",
 ]
 
 [project.optional-dependencies]
@@ -28,6 +32,7 @@ mypy = [
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+exclude = ["app/grpc/generated"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
@@ -43,6 +48,18 @@ indent-style = "space"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 markers = ["integration: requires running postgres and redis (docker-compose)"]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+exclude = ["app/grpc"]
+
+[[tool.mypy.overrides]]
+module = ["grpc", "grpc.*", "grpc_reflection.*", "google.protobuf", "google.protobuf.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["app.grpc", "app.grpc.*"]
+follow_imports = "skip"
 
 [tool.coverage.run]
 source = ["app"]

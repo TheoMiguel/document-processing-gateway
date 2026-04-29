@@ -64,6 +64,6 @@
 
 ## Phase 8 — Bonus: gRPC
 
-- [ ] `gateway.proto`: `SubmitDocument` and `GetJobStatus` RPCs
-- [ ] gRPC server setup
-- [ ] Handlers in `grpc/gateway.py` calling `job_service.py` directly
+- [x] `gateway.proto`: `SubmitDocument` and `GetJobStatus` RPCs
+- [x] gRPC server setup
+- [x] Handlers in `grpc/gateway.py` calling `job_service.py` directly

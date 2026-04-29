@@ -7,6 +7,7 @@ from app.api.v1.jobs import router as jobs_router
 from app.core.config import settings
 from app.core.events import EventPublisher
 from app.core.orchestrator import PipelineOrchestrator
+from app.grpc.server import create_grpc_server
 from app.providers.analysis import FastAnalyzer
 from app.providers.enrichment import FastEnricher
 from app.providers.extraction import FastExtractor
@@ -24,7 +25,13 @@ async def lifespan(app: FastAPI):
         enrichment=FastEnricher(),
         publisher=publisher,
     )
+    grpc_server = await create_grpc_server(
+        publisher=app.state.publisher,
+        orchestrator=app.state.orchestrator,
+    )
+    await grpc_server.start()
     yield
+    await grpc_server.stop(grace=5)
     drain_task.cancel()
     await publisher.close()
 

@@ -26,7 +26,7 @@ class EventPublisher:
             await self._client.aclose()
 
     async def publish(self, event_type: str, job_id: uuid.UUID, payload: dict) -> None:
-        fields = {
+        fields: dict[str | bytes, str | bytes | int | float] = {
             "event_type": event_type,
             "job_id": str(job_id),
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -34,20 +34,20 @@ class EventPublisher:
         }
         try:
             assert self._client is not None
-            await self._client.xadd(STREAM, fields)
+            await self._client.xadd(STREAM, fields)  # type: ignore[arg-type]
         except Exception:
             logger.warning("Redis unavailable, queuing event %s for job %s", event_type, job_id)
             await self._fallback.put(fields)
 
     async def publish_dlq(self, job_id: uuid.UUID, payload: dict) -> None:
-        fields = {
+        fields: dict[str | bytes, str | bytes | int | float] = {
             "job_id": str(job_id),
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "payload": json.dumps(payload),
         }
         try:
             assert self._client is not None
-            await self._client.xadd(DLQ_STREAM, fields)
+            await self._client.xadd(DLQ_STREAM, fields)  # type: ignore[arg-type]
         except Exception:
             logger.error("Failed to publish to DLQ for job %s: %s", job_id, payload)
 
@@ -63,7 +63,7 @@ class EventPublisher:
             for fields in pending:
                 try:
                     assert self._client is not None
-                    await self._client.xadd(STREAM, fields)
+                    await self._client.xadd(STREAM, fields)  # type: ignore[arg-type]
                 except Exception:
                     failed.append(fields)
             for fields in failed:

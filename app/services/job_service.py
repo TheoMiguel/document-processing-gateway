@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Sequence
 from datetime import datetime, timezone
 
 from sqlalchemy import select
@@ -23,7 +24,7 @@ class JobService:
         document_name: str,
         document_type: str,
         document_content: str,
-        pipeline_config: list[str],
+        pipeline_config: Sequence[str],
     ) -> Job:
         job = Job(
             document_name=document_name,
