@@ -42,10 +42,16 @@ class JobService:
             raise JobNotFoundError(job_id)
         return job
 
-    async def list(self, status: JobStatus | None = None) -> list[Job]:
+    async def list(
+        self,
+        status: JobStatus | None = None,
+        skip: int = 0,
+        limit: int = 20,
+    ) -> list[Job]:
         stmt = select(Job)
         if status is not None:
             stmt = stmt.where(Job.status == status)
+        stmt = stmt.offset(skip).limit(limit)
         result = await self.db.execute(stmt)
         return list(result.scalars().all())
 

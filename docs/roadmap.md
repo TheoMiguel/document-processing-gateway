@@ -21,12 +21,12 @@
 
 ## Phase 2 — API layer
 
-- [ ] `POST /api/v1/jobs`
-- [ ] `GET /api/v1/jobs`
-- [ ] `GET /api/v1/jobs/{job_id}`
-- [ ] `DELETE /api/v1/jobs/{job_id}`
-- [ ] Pydantic request/response schemas
-- [ ] Error handling (404, 409 for invalid transitions, 422)
+- [x] `POST /api/v1/jobs`
+- [x] `GET /api/v1/jobs`
+- [x] `GET /api/v1/jobs/{job_id}`
+- [x] `DELETE /api/v1/jobs/{job_id}`
+- [x] Pydantic request/response schemas
+- [x] Error handling (404, 409 for invalid transitions, 422)
 
 ## Phase 3 — Providers + pipeline
 
