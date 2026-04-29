@@ -58,9 +58,9 @@
 
 ## Phase 7 — Docs + polish
 
-- [ ] `README.md`: setup instructions, architecture diagram, technology choices justified
-- [ ] Review error messages and HTTP status codes
-- [ ] Final pass on Docker Compose (healthchecks, restart policies)
+- [x] `README.md`: setup instructions, architecture diagram, technology choices justified
+- [x] Review error messages and HTTP status codes
+- [x] Final pass on Docker Compose (healthchecks, restart policies)
 
 ## Phase 8 — Bonus: gRPC
 
